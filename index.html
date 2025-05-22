@@ -4,37 +4,128 @@
     <meta charset="UTF-8">
     <title>Love Calculator</title>
     <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            text-align: center;
+            background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+            padding-top: 100px;
+        }
+
+        input {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            width: 200px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 10px;
+            background-color: #ff69b4;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ff1493;
+        }
+
         .output {
-            position: absolute;
+            position: fixed;
             top: -100%;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #fff0f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             transition: top 0.5s ease;
-            background: pink;
-            padding: 20px;
+            z-index: 1000;
+        }
+
+        .hearts {
+            font-size: 2rem;
+            animation: pop 0.6s infinite alternate;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.2); }
+        }
+
+        #love_score {
+            font-size: 3rem;
+            color: crimson;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+
+        #loading {
+            font-size: 1.5rem;
+            color: purple;
+            margin: 20px 0;
+        }
+
+        #fun_message {
+            font-size: 1.2rem;
+            margin: 10px;
+            color: #444;
         }
     </style>
 </head>
 <body>
+
+    <h1>💕 Love Calculator 💕</h1>
+
     <input id="boyfriend" type="text" placeholder="Boyfriend name">
     <input id="girlfriend" type="text" placeholder="Girlfriend name">
+    <br>
     <button id="calculate_love">Calculate</button>
 
     <div class="output">
         <p id="output_boyfriend"></p>
         <p id="output_girlfriend"></p>
-        <h1 id="love_score"></h1>
-        <button id="go_back">Go Back</button>
+
+        <div id="loading" style="display: none;">🔮 Calculating love...</div>
+
+        <div id="result" style="display: none;">
+            <h1 id="love_score"></h1>
+            <p id="fun_message"></p>
+            <div class="hearts">💖 💘 💝 💗 💓</div>
+            <br>
+            <button id="go_back">Go Back</button>
+        </div>
     </div>
+
+    <!-- You can replace this with your own mp3 file -->
+    <audio id="love_music" src="assets/pop.mp3" preload="auto"></audio>
 
     <script>
         let boyfriend = document.getElementById('boyfriend');
         let girlfriend = document.getElementById('girlfriend');
         let calculate_btn = document.getElementById('calculate_love');
         let output_section = document.querySelector('.output');
-        let music = new Audio('assets/pop.mp3'); // Optional, ensure path exists
+        let music = document.getElementById('love_music');
         let go_back = document.getElementById('go_back');
         let girlfriend_output = document.getElementById('output_girlfriend');
         let boyfriend_output = document.getElementById('output_boyfriend');
         let love_score = document.getElementById('love_score');
+        let loading = document.getElementById('loading');
+        let result = document.getElementById('result');
+        let fun_message = document.getElementById('fun_message');
 
         calculate_btn.onclick = () => {
             let boyfriendName = boyfriend.value.trim().toLowerCase();
@@ -48,15 +139,37 @@
             output_section.style.top = "0";
             girlfriend_output.innerText = girlfriend.value.trim();
             boyfriend_output.innerText = boyfriend.value.trim();
-
-            if (boyfriendName === "jaideep" && girlfriendName === "vanshika") {
-                love_score.innerText = "100";
-            } else {
-                love_score.innerText = Math.floor(Math.random() * 101).toString();
-            }
+            loading.style.display = "block";
+            result.style.display = "none";
 
             music.currentTime = 0;
             music.play();
+
+            setTimeout(() => {
+                loading.style.display = "none";
+                result.style.display = "block";
+
+                let score = 0;
+
+                if (boyfriendName === "jaideep" && girlfriendName === "vanshika") {
+                    score = 100;
+                } else {
+                    score = 0;
+                }
+
+                love_score.innerText = score + "%";
+
+                if (score > 80) {
+                    fun_message.innerText = "Made for each other! 💑💍";
+                } else if (score > 50) {
+                    fun_message.innerText = "There's definitely a spark! ✨";
+                } else if (score > 20) {
+                    fun_message.innerText = "Maybe just friends 😅";
+                } else {
+                    fun_message.innerText = "Run while you can! 😂";
+                }
+
+            }, 2000);
         };
 
         go_back.onclick = () => {
@@ -65,5 +178,6 @@
             music.play();
         };
     </script>
+
 </body>
 </html>
